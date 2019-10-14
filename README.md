@@ -6,6 +6,8 @@ An ES6 Javascript class designed to provide a color selector in the shape of a r
 
 This project is currently being refactored into a more performant version.
 
+This codebase will be modernized to provide a React component.
+
 # User Stories
 
 - As a User, I can mouse hover to see a preview of a color.
