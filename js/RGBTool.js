@@ -1,17 +1,57 @@
 import * as RegularPoly from 'regular-poly';
 
 function isolateColor(radians, xOffset) {
+  switch (xOffset) {
+    case 0:
+      xOffset = 0;
+      break;
+    case 1:
+      xOffset = (4 * Math.PI) / 3;
+      break;
+    case 2:
+      xOffset = (8 * Math.PI) / 3;
+      break;
+    default:
+      throw new Error('xOffset in isolateColor must be integer 0, 1, or 2');
+  }
+
+  // Create a sine wave
+  //    Domain: (0, 2*PI)
+  //    Range: (0, 1)
+  //    Period: 2*PI/3
+  //
+  // This curve doesn't need to shift by xOffset because
+  // the translations in x exactly correspond to thirds of
+  // this overall graph.
+
   colorGraph = 1 - (0.5 + Math.cos(3 * radians) * 0.5);
 
-  outerBound = 0.5 + Math.cos(radians + xOffset) * 0.5;
-  innerBound = outerBound - 1;
+  // Plot the graph for the outer bounds of the color's
+  // change in value.
+  outerBound = 0.5 + Math.cos(radians + xOffset) * 0.5 - 1 / 4;
 
+  // Plot the graph for the inner bounds of the color's
+  // change in value (plateau).
+  innerBound = outerBound - 1 / 2;
+
+  // Extract the sign of the outer and inner bounds,
+  // constraining to the unit interval (0, 1).
   outerSquare = Math.sign(Math.max(outerBound, 0));
   innerSquare = Math.sign(Math.max(innerBound, 0));
 
-  isolatedColor = innerSquare + (outerSquare - innerSquare) * colorGraph;
+  // Color plateaus at max value of 1 when x <= |PI/3|
+  // from xOffset.
+  colorPlateau = innerSquare;
 
-  // Returns the isolated color in terms of the unit interval [0,1]
+  // Color changes value when x >= |PI/3| and x <= |2*PI/3|
+  // from xOffset.
+  colorCurve = (outerSquare - innerSquare) * colorGraph;
+
+  // The resulting isolated color spectra is the sum of
+  // the color plateau and the color curve.
+  isolatedColor = colorPlateau + colorCurve;
+
+  // Return the color spectra.
   return isolatedColor;
 }
 
@@ -20,11 +60,11 @@ function isolateRed(radians) {
 }
 
 function isolateGreen(radians) {
-  return isolateColor(radians, (4 * Math.PI) / 3);
+  return isolateColor(radians, 1);
 }
 
 function isolateBlue(radians) {
-  return isolateColor(radians, (8 * Math.PI) / 3);
+  return isolateColor(radians, 2);
 }
 
 class RegularPoly {
