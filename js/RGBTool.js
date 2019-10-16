@@ -1,18 +1,16 @@
 import * as RegularPoly from 'regular-poly';
 
-function isolateColor(radians, xOffset) {
-  switch (xOffset) {
-    case 0:
-      xOffset = 0;
-      break;
-    case 1:
-      xOffset = (4 * Math.PI) / 3;
-      break;
-    case 2:
-      xOffset = (8 * Math.PI) / 3;
-      break;
-    default:
-      throw new Error('xOffset in isolateColor must be integer 0, 1, or 2');
+function getColorAmplitude(radians, xOffset) {
+  if (xOffset === 0 || xOffset === undefined) {
+    xOffset = 0;
+  } else if (xOffset === 1) {
+    xOffset = (4 * Math.PI) / 3;
+  } else if (xOffset === 2) {
+    xOffset = (8 * Math.PI) / 3;
+  } else {
+    throw new Error(
+      'xOffset in getColorAmplitude must be an integer 0, 1, or 2'
+    );
   }
 
   // Create a sine wave
@@ -24,7 +22,7 @@ function isolateColor(radians, xOffset) {
   // the translations in x exactly correspond to thirds of
   // this overall graph.
 
-  colorGraph = 1 - (0.5 + Math.cos(3 * radians) * 0.5);
+  colorCurve = 1 - (0.5 + Math.cos(3 * radians) * 0.5);
 
   // Plot the graph for the outer bounds of the color's
   // change in value.
@@ -36,35 +34,35 @@ function isolateColor(radians, xOffset) {
 
   // Extract the sign of the outer and inner bounds,
   // constraining to the unit interval (0, 1).
-  outerSquare = Math.sign(Math.max(outerBound, 0));
-  innerSquare = Math.sign(Math.max(innerBound, 0));
+  outerSign = Math.sign(Math.max(outerBound, 0));
+  innerSign = Math.sign(Math.max(innerBound, 0));
 
   // Color plateaus at max value of 1 when x <= |PI/3|
   // from xOffset.
-  colorPlateau = innerSquare;
+  colorPlateau = innerSign;
 
   // Color changes value when x >= |PI/3| and x <= |2*PI/3|
   // from xOffset.
-  colorCurve = (outerSquare - innerSquare) * colorGraph;
+  colorChange = (outerSign - innerSign) * colorGraph;
 
   // The resulting isolated color spectra is the sum of
   // the color plateau and the color curve.
-  isolatedColor = colorPlateau + colorCurve;
+  isolatedColor = colorPlateau + colorChange;
 
   // Return the color spectra.
   return isolatedColor;
 }
 
-function isolateRed(radians) {
-  return isolateColor(radians, 0);
+function getRed(radians) {
+  return getColorAmplitude(radians, 0);
 }
 
-function isolateGreen(radians) {
-  return isolateColor(radians, 1);
+function getGreen(radians) {
+  return getColorAmplitude(radians, 1);
 }
 
-function isolateBlue(radians) {
-  return isolateColor(radians, 2);
+function getBlue(radians) {
+  return getColorAmplitude(radians, 2);
 }
 
 class RegularPoly {

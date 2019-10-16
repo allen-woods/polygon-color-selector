@@ -16,6 +16,11 @@ This codebase will be modernized to provide a React component.
 - As a User, I can confirm my color selection by clicking a "✓".
 - As a User, I can cancel my color selection by clicking an "X"
 
+# Planning
+
+- Accurately graph the value of a color at a given angle.
+- Allow color offset to enable each hue of a color triplet to utilize the same graphing function.
+
 ## Preview
 
 The final project will resemble the following:
